@@ -1,0 +1,8 @@
+{
+  "name": "@arosaned/inversify-react",
+  "version": "0.0.1",
+  "dependencies": {
+    "react": "^16.13.1",
+    "inversify": "^5.0.1"
+  }
+}

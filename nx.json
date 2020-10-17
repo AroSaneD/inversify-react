@@ -29,6 +29,9 @@
     "playground-e2e": {
       "tags": [],
       "implicitDependencies": ["playground"]
+    },
+    "inversify-react": {
+      "tags": []
     }
   }
 }
