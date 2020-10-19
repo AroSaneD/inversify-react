@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { isFunction } from 'util';
 import { providerContext } from './context';
+import { isSetupFunction } from './prop-setup';
 
-// todo: some matcher when to rerender?
 export const connect = <PropType, RequiredPropTypes>(
     WrappedComponent: React.FC<PropType | RequiredPropTypes>,
     propGetter: (...providers: any) => PropType,
-    dependencies: any[]
+    dependencies: any[],
 ): React.FC<RequiredPropTypes> => {
     return (props: RequiredPropTypes) => {
         const container = React.useContext(providerContext);
@@ -15,6 +16,18 @@ export const connect = <PropType, RequiredPropTypes>(
 
             return result;
         }, []);
+
+        // If any fields in the prop container are setup functions,
+        // call them here (outside of any React.use... functions)
+        for (const key in dynamicProps) {
+            if (Object.prototype.hasOwnProperty.call(dynamicProps, key)) {
+                const element = dynamicProps[key];
+
+                if (isSetupFunction(element)) {
+                    dynamicProps[key] = element();
+                }
+            }
+        }
 
         return <WrappedComponent {...dynamicProps} />;
     };
