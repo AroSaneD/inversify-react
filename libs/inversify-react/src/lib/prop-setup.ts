@@ -17,6 +17,6 @@ export function isSetupFunction(
     elementInQuestion: any | Function,
 ): elementInQuestion is Function {
     return (
-        elementInQuestion[setupSymbol] === true && isFunction(elementInQuestion)
+        isFunction(elementInQuestion) && elementInQuestion[setupSymbol] === true
     );
 }

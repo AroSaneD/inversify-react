@@ -6,19 +6,19 @@ export type Buildable<T> = {
     [P in keyof T]: T[P] | (() => T[P]);
 };
 
+// Can't mutate original object, because overrides result of useMemo
 function convertBuildableToOrdinary<T>(buildableProps: Buildable<T>): T {
     // If any fields in the prop container are setup functions,
-    for (const key in buildableProps) {
-        if (Object.prototype.hasOwnProperty.call(buildableProps, key)) {
-            const element = buildableProps[key];
+    const built = Object.keys(buildableProps)
+        .filter((k) => isSetupFunction(buildableProps[k]))
+        .map((k) => [k, buildableProps[k]] as [string, () => keyof T])
+        .map(([k, f]) => [k, f()] as [string, keyof T])
+        .reduce((acc: Partial<T>, [k, b]) => {
+            acc[k] = b;
+            return acc;
+        }, {});
 
-            if (isSetupFunction(element)) {
-                buildableProps[key] = element();
-            }
-        }
-    }
-
-    return buildableProps as T;
+    return { ...buildableProps, ...built } as T;
 }
 
 export const connect = <PropType, RequiredPropTypes>(
