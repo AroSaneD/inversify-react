@@ -8,7 +8,6 @@ export type Buildable<T> = {
 
 function convertBuildableToOrdinary<T>(buildableProps: Buildable<T>): T {
     // If any fields in the prop container are setup functions,
-    // call them here (outside of any React.use... functions)
     for (const key in buildableProps) {
         if (Object.prototype.hasOwnProperty.call(buildableProps, key)) {
             const element = buildableProps[key];
@@ -36,6 +35,7 @@ export const connect = <PropType, RequiredPropTypes>(
             return result;
         }, []);
 
+        // Convert buildable prop fields outside of any React.use... functions
         const builtProps = convertBuildableToOrdinary(dynamicProps);
 
         return <WrappedComponent {...builtProps} />;
