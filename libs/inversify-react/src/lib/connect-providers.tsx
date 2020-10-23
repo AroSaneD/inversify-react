@@ -1,11 +1,30 @@
 import * as React from 'react';
-import { isFunction } from 'util';
 import { providerContext } from './context';
 import { isSetupFunction } from './prop-setup';
 
+export type Buildable<T> = {
+    [P in keyof T]: T[P] | (() => T[P]);
+};
+
+function convertBuildableToOrdinary<T>(buildableProps: Buildable<T>): T {
+    // If any fields in the prop container are setup functions,
+    // call them here (outside of any React.use... functions)
+    for (const key in buildableProps) {
+        if (Object.prototype.hasOwnProperty.call(buildableProps, key)) {
+            const element = buildableProps[key];
+
+            if (isSetupFunction(element)) {
+                buildableProps[key] = element();
+            }
+        }
+    }
+
+    return buildableProps as T;
+}
+
 export const connect = <PropType, RequiredPropTypes>(
     WrappedComponent: React.FC<PropType | RequiredPropTypes>,
-    propGetter: (...providers: any) => PropType,
+    propGetter: (...providers: any) => Buildable<PropType>,
     dependencies: any[],
 ): React.FC<RequiredPropTypes> => {
     return (props: RequiredPropTypes) => {
@@ -17,18 +36,8 @@ export const connect = <PropType, RequiredPropTypes>(
             return result;
         }, []);
 
-        // If any fields in the prop container are setup functions,
-        // call them here (outside of any React.use... functions)
-        for (const key in dynamicProps) {
-            if (Object.prototype.hasOwnProperty.call(dynamicProps, key)) {
-                const element = dynamicProps[key];
+        const builtProps = convertBuildableToOrdinary(dynamicProps);
 
-                if (isSetupFunction(element)) {
-                    dynamicProps[key] = element();
-                }
-            }
-        }
-
-        return <WrappedComponent {...dynamicProps} />;
+        return <WrappedComponent {...builtProps} />;
     };
 };
