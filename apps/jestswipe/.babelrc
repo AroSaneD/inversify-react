@@ -1,4 +1,16 @@
 {
-    "presets": ["@nrwl/react/babel"],
-    "plugins": [["styled-components", { "pure": true, "ssr": true }]]
+    "presets": [
+        "@nrwl/react/babel"
+    ],
+    "plugins": [
+        [
+            "styled-components",
+            {
+                "pure": true,
+                "ssr": true
+            }
+        ],
+        "babel-plugin-transform-typescript-metadata",
+        "babel-plugin-parameter-decorator"
+    ]
 }
