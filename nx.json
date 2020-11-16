@@ -1,37 +1,44 @@
 {
-  "npmScope": "inversify-react",
-  "affected": {
-    "defaultBase": "master"
-  },
-  "implicitDependencies": {
-    "workspace.json": "*",
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
+    "npmScope": "inversify-react",
+    "affected": {
+        "defaultBase": "master"
     },
-    "tsconfig.base.json": "*",
-    "tslint.json": "*",
-    ".eslintrc.json": "*",
-    "nx.json": "*"
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
-      }
+    "implicitDependencies": {
+        "workspace.json": "*",
+        "package.json": {
+            "dependencies": "*",
+            "devDependencies": "*"
+        },
+        "tsconfig.base.json": "*",
+        "tslint.json": "*",
+        ".eslintrc.json": "*",
+        "nx.json": "*"
+    },
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "@nrwl/workspace/tasks-runners/default",
+            "options": {
+                "cacheableOperations": ["build", "lint", "test", "e2e"]
+            }
+        }
+    },
+    "projects": {
+        "playground": {
+            "tags": []
+        },
+        "playground-e2e": {
+            "tags": [],
+            "implicitDependencies": ["playground"]
+        },
+        "inversify-react": {
+            "tags": []
+        },
+        "jestswipe": {
+            "tags": []
+        },
+        "jestswipe-e2e": {
+            "tags": [],
+            "implicitDependencies": ["jestswipe"]
+        }
     }
-  },
-  "projects": {
-    "playground": {
-      "tags": []
-    },
-    "playground-e2e": {
-      "tags": [],
-      "implicitDependencies": ["playground"]
-    },
-    "inversify-react": {
-      "tags": []
-    }
-  }
 }
