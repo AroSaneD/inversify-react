@@ -21,16 +21,17 @@ function convertBuildableToOrdinary<T>(buildableProps: Buildable<T>): T {
     return { ...buildableProps, ...built } as T;
 }
 
+// todo: add type/function override to support syntax with now required props
 export const connect = <PropType, RequiredPropTypes>(
     WrappedComponent: React.FC<PropType | RequiredPropTypes>,
-    propGetter: (...providers: any) => Buildable<PropType>,
+    propGetter: (props: RequiredPropTypes, ...providers: any) => Buildable<PropType>,
     dependencies: any[],
 ): React.FC<RequiredPropTypes> => {
     return (props: RequiredPropTypes) => {
         const container = React.useContext(providerContext);
         const dynamicProps = React.useMemo(() => {
             const providers = dependencies.map((d) => container.get(d));
-            const result = propGetter(...[props, ...providers]);
+            const result = propGetter(props, ...providers);
 
             return result;
         }, []);
