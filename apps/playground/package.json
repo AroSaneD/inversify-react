@@ -5,7 +5,7 @@
   "scripts": {
     "test": "jest",
     "build": "webpack",
-    "start": "webpack serve --open --hot-only",
+    "start": "webpack serve --open",
     "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer stats.json"
   },
   "dependencies": {
