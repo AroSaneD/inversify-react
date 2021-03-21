@@ -1,19 +1,30 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../common/tsconfig.json",
   "compilerOptions": {
-    "jsx": "react",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "outDir": "./dist/",
+    "typeRoots": ["node_modules/@types"],
+    "declaration": true
   },
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
+  "exclude": [
+    "node_modules"
   ]
 }
+// {
+//   "extends": "../../tsconfig.base.json",
+//   "compilerOptions": {
+//     "jsx": "react",
+//     "allowJs": true,
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true
+//   },
+//   "files": [],
+//   "include": [],
+//   "references": [
+//     {
+//       "path": "./tsconfig.lib.json"
+//     },
+//     {
+//       "path": "./tsconfig.spec.json"
+//     }
+//   ]
+// }

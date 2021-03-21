@@ -10,9 +10,15 @@ export type Buildable<T> = {
 function convertBuildableToOrdinary<T>(buildableProps: Buildable<T>): T {
     // If any fields in the prop container are setup functions,
     const built = Object.keys(buildableProps)
-        .filter((k) => isSetupFunction(buildableProps[k]))
-        .map((k) => [k, buildableProps[k]] as [string, () => keyof T])
-        .map(([k, f]) => [k, f()] as [string, keyof T])
+        .map((k) => {
+            const maybeFunction = buildableProps[k as keyof T];
+            if (isSetupFunction(maybeFunction)) {
+                return [k, maybeFunction()] as [keyof T, T[keyof T]];
+            }
+
+            return null;
+        })
+        .filter(pair => pair != null)
         .reduce((acc: Partial<T>, [k, b]) => {
             acc[k] = b;
             return acc;
