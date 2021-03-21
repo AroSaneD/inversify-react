@@ -1,10 +1,14 @@
-import { isFunction } from 'util';
-
 const setupSymbol = Symbol('PropSetup');
+
+function isFunction(e: any){
+    return typeof e === 'function';
+}
 
 // todo: setup arguments?
 export function buildPropWithSetup<T>(propSetup: () => T) {
-    const markedFunction = () => {
+    // todo: reinvestigate is this symbol accessing is actually needed, 
+    // or something more maneagable can be implemented
+    const markedFunction: any = () => {
         return propSetup();
     };
 

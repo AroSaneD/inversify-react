@@ -1,0 +1,24 @@
+{
+    "name": "ir-playground",
+    "version": "0.0.1",
+    "module": "src/main.tsx",
+    "scripts": {
+      "test": "jest",
+      "build": "webpack"
+    },
+    "dependencies": {
+      "@arosaned/inversify-react": "0.0.1"
+    },
+    "devDependencies": {
+      "typescript": "~4.2.3",
+      "@types/react": "~17.0.3",
+      "@testing-library/react": "~11.2.5",
+      "@types/jest": "~26.0.21",
+      "tslib": "~2.1.0",
+      "jest": "~26.6.3",
+      "webpack": "~5.27.1",
+      "ts-loader": "~8.0.18",
+      "webpack-cli": "~4.5.0"
+    }
+  }
+  

@@ -1,13 +1,31 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
-    "types": ["node"]
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
   },
-  "files": [
-    "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
-    "../../node_modules/@nrwl/react/typings/image.d.ts"
-  ],
-  "exclude": ["**/*.spec.ts", "**/*.spec.tsx"],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "exclude": [
+    "node_modules"
+  ]
 }
+// {
+//   "extends": "./tsconfig.json",
+//   "compilerOptions": {
+//     "outDir": "../../dist/out-tsc",
+//     "types": ["node"]
+//   },
+//   "files": [
+//     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
+//     "../../node_modules/@nrwl/react/typings/image.d.ts"
+//   ],
+//   "exclude": ["**/*.spec.ts", "**/*.spec.tsx"],
+//   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+// }
