@@ -1,22 +1,8 @@
 {
+  "extends": "../../common/tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/",
-    "jsx": "react",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2015",
-    "module": "es6",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2017", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "noImplicitAny": true,
     "declaration": true
   },
   "exclude": [

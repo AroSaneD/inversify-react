@@ -104,7 +104,7 @@ const ComponentWithProviders = connect<
 // );
 const testApp = () => (
     <providerContext.Provider value={container}>
-        <ComponentWithProviders c={3} />
+        <ComponentWithProviders c={10} />
     </providerContext.Provider>
 );
 
