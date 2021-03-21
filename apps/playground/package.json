@@ -6,7 +6,7 @@
     "test": "jest",
     "build": "webpack",
     "start": "webpack serve --open --hot-only",
-    "analyze": "webpack --profile --json > stats.json"
+    "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer stats.json"
   },
   "dependencies": {
     "@arosaned/inversify-react": "0.0.1",
