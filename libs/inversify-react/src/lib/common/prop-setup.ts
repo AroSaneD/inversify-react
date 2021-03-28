@@ -5,7 +5,7 @@ function isFunction(e: any){
 }
 
 // todo: setup arguments?
-export function buildPropWithSetup<T>(propSetup: () => T) {
+export function buildPropWithSetup<T>(propSetup: () => T): () => T {
     // todo: reinvestigate is this symbol accessing is actually needed, 
     // or something more maneagable can be implemented
     const markedFunction: any = () => {

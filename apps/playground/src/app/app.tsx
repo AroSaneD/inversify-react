@@ -68,20 +68,17 @@ const TestComponent: React.FC<TestComponentProps> = ({ a, b, c, d }) => {
     return <h1>Test: {a + b + c + d}</h1>;
 };
 
-const ComponentWithProviders = connect<
-    Omit<TestComponentProps, 'c'>,
-    { c: number }
->(
+const ComponentWithProviders = connect(
     TestComponent,
     (
-        addedProps: { c: number },
+        requiredParams: {c: number},
         dep1: TestClass2,
         dep2: TestClass3,
         dep3: TestClass4,
     ) => ({
         a: dep1.getA(),
         b: dep2.getB(),
-        c: addedProps.c,
+        c: requiredParams.c,
         d: buildPropWithSetup(() => {
             const [v, setV] = React.useState<number>(0);
             React.useEffect(() => {
@@ -104,7 +101,7 @@ const ComponentWithProviders = connect<
 // );
 const testApp = () => (
     <providerContext.Provider value={container}>
-        <ComponentWithProviders c={10} />
+        <ComponentWithProviders c={5} />
     </providerContext.Provider>
 );
 
