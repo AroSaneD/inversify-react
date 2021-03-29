@@ -4,15 +4,26 @@ import { Observable, combineLatest } from 'rxjs'; // remove when observables bec
 import { providerContext } from '../common/context';
 // import { connect } from '../connect';
 
-type Asynchronous<T> = Promise<T> | Observable<T>;
+/**
+ * Currently promises don't have a default/standart way to wrap
+ * error handling inside of them. So in cases where a promise would fail, 
+ * the workflow currently designed by this library would break down. 
+ *
+ * Needs more investigation on what best practises would there be to handle
+ * promise errors in react, and if there'd be a way to integrate into current 
+ * workflow, or if there'd be a better workflow that could incorporate both
+ * promises and observables.
+ */
+
+type Asynchronous<T> = /*Promise<T> |*/ Observable<T>;
 
 type WithAsyncableParts<T> = {
     [P in keyof T]: T[P] | Asynchronous<T>;
 };
 
-function isPromise(maybePromise: any) {
-    return typeof maybePromise?.then === 'function';
-}
+// function isPromise(maybePromise: any) {
+//     return typeof maybePromise?.then === 'function';
+// }
 
 function isObservable(maybeObs: any) {
     return maybeObs instanceof Observable;
@@ -20,10 +31,8 @@ function isObservable(maybeObs: any) {
 
 function isAsynchronousObject<T>(
     elementInQuestion: T | Asynchronous<T>,
-): elementInQuestion is Asynchronous<T> {
-    return (
-        isPromise(elementInQuestion) || isObservable(elementInQuestion)
-    );
+): boolean {
+    return isObservable(elementInQuestion);
 }
 
 
@@ -34,29 +43,58 @@ function extractAsynchronousObjects<T>(buildableProps: WithAsyncableParts<T>): W
         .map((key) => {
             const maybeAsynchronous = buildableProps[key as keyof T];
             if (isAsynchronousObject(maybeAsynchronous)) {
-                return [key, maybeAsynchronous] as unknown as [keyof T, Asynchronous<T[keyof T]>];
+                return [key, maybeAsynchronous] as [keyof T, T[keyof T]];
             }
 
             return null;
         })
         .filter(pair => pair != null)
         .reduce((acc: Partial<WithAsyncableParts<T>>, [k, b]) => {
-            (acc[k] as any) = b; // either compiler or my brain can't understand so many wrapped types. Should simplify
+            acc[k] = b;
             return acc;
         }, {});
 
-    return { ...buildableProps, ...built } as T;
+    return { ...built }; // Returns an object containing only async fields
 }
 
-function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>): T{
+function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>): T {
     // extract promises
-    // extract observables
-
+    // const promiseFields = Object.keys(asyncableProps)
+    //     .map(key => {
+    //         const eInQ = asyncableProps[key as keyof T];
+    //         if(isPromise(eInQ)) return [key, eInQ];
+    //         return null;
+    //     })
+    //     .filter(a => a) as [string, Promise<any>][];
     // Promise.all (if possible with dynamic fields)
-    // combineLatest (if possible with dynamic fields)
 
-    // React.useEffect probably in combination with React.useState to join results of promises and observables
-    // return joined object as T
+    // extract observables
+    const observableFields = Object.keys(asyncableProps)
+        .map(key => {
+            const eInQ = asyncableProps[key as keyof T];
+            if (isObservable(eInQ)) return [key, eInQ] as [string, Observable<any>];
+            return null;
+        })
+        .filter(a => a);
+
+    const [values, setValues] = React.useState<T>(null);
+
+    // combineLatest (if possible with dynamic fields)
+    // React.useEffect probably in combination with React.useState to join results of observables (and maybe promises)
+    React.useEffect(() => {
+        const joinedObs = combineLatest([...observableFields.map(([k, v]) => v)]);
+        joinedObs.subscribe(joinedValues => {
+            const props = joinedValues.reduce((acc, v, i) => {
+                const [key] = observableFields[i];
+                acc[key] = v;
+                return acc;
+            }, {});
+
+            setValues(props);
+        });
+    }, []);
+
+    return values;
 }
 
 // can requiredPropTypes be async objects as well?
@@ -82,7 +120,7 @@ export function connectAsync<RequiredPropTypes, PropType>(
         const asyncProps = extractAsynchronousObjects(dynamicProps);
         const syncProps = convertAsyncPropsToSync(asyncProps);
 
-        const builtProps = {...dynamicProps, ...syncProps} as PropType;
+        const builtProps = { ...dynamicProps, ...syncProps } as PropType;
 
 
         return <WrappedComponent {...builtProps} />;
