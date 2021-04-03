@@ -1,13 +1,9 @@
 import { Container } from 'inversify';
 import * as React from 'react';
 import { interval } from 'rxjs';
-import { take, map } from 'rxjs/operators';
-import {
-    providerContext,
-    connect,
-    buildPropWithSetup,
-} from '@arosaned/inversify-react';
-import wut from '@arosaned/inversify-react/async'
+import { take, map, startWith } from 'rxjs/operators';
+import { providerContext, connect, buildPropWithSetup } from '@arosaned/inversify-react';
+import { connectAsync } from '@arosaned/inversify-react/async';
 // import './test';
 
 // #region dependencies
@@ -40,8 +36,9 @@ class TestClass4 {
 
     getMutatableD() {
         return interval(200).pipe(
+            startWith(0),
             map((i) => i * 2),
-            take(5),
+            take(6)
         );
     }
 }
@@ -52,9 +49,7 @@ class TestClass4 {
 const container = new Container();
 
 container.bind(TestClass1).toDynamicValue((_) => new TestClass1());
-container
-    .bind(TestClass2)
-    .toDynamicValue((ctx) => new TestClass2(ctx.container.get(TestClass1)));
+container.bind(TestClass2).toDynamicValue((ctx) => new TestClass2(ctx.container.get(TestClass1)));
 container.bind(TestClass3).toDynamicValue((_) => new TestClass3());
 container.bind(TestClass4).toDynamicValue((_) => new TestClass4());
 
@@ -67,17 +62,13 @@ interface TestComponentProps {
 }
 
 const TestComponent: React.FC<TestComponentProps> = ({ a, b, c, d }) => {
+    console.log(d);
     return <h1>Test: {a + b + c + d}</h1>;
 };
 
 const ComponentWithProviders = connect(
     TestComponent,
-    (
-        requiredParams: {c: number},
-        dep1: TestClass2,
-        dep2: TestClass3,
-        dep3: TestClass4,
-    ) => ({
+    (requiredParams: { c: number }, dep1: TestClass2, dep2: TestClass3, dep3: TestClass4) => ({
         a: dep1.getA(),
         b: dep2.getB(),
         c: requiredParams.c,
@@ -94,14 +85,19 @@ const ComponentWithProviders = connect(
             return v;
         }),
     }),
-    [TestClass2, TestClass3, TestClass4],
+    [TestClass2, TestClass3, TestClass4]
 );
 
-// const ComponentWithProviders2 = 
-
-// todo: run this through ts-node to check if unresolved secondary entrypoints
-//      are a typescript or a webpack issue.
-console.log(wut);
+const AsyncComponentWithProviders = connectAsync(
+    TestComponent,
+    (req: Omit<TestComponentProps, 'd'>, dep1: TestClass4) => {
+        return {
+            ...req,
+            d: dep1.getMutatableD() as any,
+        };
+    },
+    [TestClass4]
+);
 
 // const element = document.getElementById('test');
 // ReactDOM.render(
@@ -109,7 +105,11 @@ console.log(wut);
 // );
 const testApp = () => (
     <providerContext.Provider value={container}>
-        <ComponentWithProviders c={5} />
+        <div>
+            {/* <ComponentWithProviders c={5} />
+            <hr /> */}
+            <AsyncComponentWithProviders a={2} b={3} c={5} />
+        </div>
     </providerContext.Provider>
 );
 
