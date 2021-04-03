@@ -1,0 +1,9 @@
+{
+    "name": "@arosaned/inversify-react/async",
+    "types": "../dist/src/lib/async/index.d.ts",
+    "main": "../dist/async/index.js"
+    // "module": "../dist/async/index.js",
+    // "es2015": "../dist/async/index.js",
+    // "sideEffects": false
+  }
+  

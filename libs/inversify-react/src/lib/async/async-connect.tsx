@@ -6,11 +6,11 @@ import { providerContext } from '../common/context';
 
 /**
  * Currently promises don't have a default/standart way to wrap
- * error handling inside of them. So in cases where a promise would fail, 
- * the workflow currently designed by this library would break down. 
+ * error handling inside of them. So in cases where a promise would fail,
+ * the workflow currently designed by this library would break down.
  *
  * Needs more investigation on what best practises would there be to handle
- * promise errors in react, and if there'd be a way to integrate into current 
+ * promise errors in react, and if there'd be a way to integrate into current
  * workflow, or if there'd be a better workflow that could incorporate both
  * promises and observables.
  */
@@ -29,15 +29,14 @@ function isObservable(maybeObs: any) {
     return maybeObs instanceof Observable;
 }
 
-function isAsynchronousObject<T>(
-    elementInQuestion: T | Asynchronous<T>,
-): boolean {
+function isAsynchronousObject<T>(elementInQuestion: T | Asynchronous<T>): boolean {
     return isObservable(elementInQuestion);
 }
 
-
 // Can't mutate original object, because overrides result of useMemo
-function extractAsynchronousObjects<T>(buildableProps: WithAsyncableParts<T>): WithAsyncableParts<Partial<T>> {
+function extractAsynchronousObjects<T>(
+    buildableProps: WithAsyncableParts<T>
+): WithAsyncableParts<Partial<T>> {
     // If any fields in the prop container are setup functions,
     const built = Object.keys(buildableProps)
         .map((key) => {
@@ -48,7 +47,7 @@ function extractAsynchronousObjects<T>(buildableProps: WithAsyncableParts<T>): W
 
             return null;
         })
-        .filter(pair => pair != null)
+        .filter((pair) => pair != null)
         .reduce((acc: Partial<WithAsyncableParts<T>>, [k, b]) => {
             acc[k] = b;
             return acc;
@@ -70,12 +69,12 @@ function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>): T {
 
     // extract observables
     const observableFields = Object.keys(asyncableProps)
-        .map(key => {
+        .map((key) => {
             const eInQ = asyncableProps[key as keyof T];
             if (isObservable(eInQ)) return [key, eInQ] as [string, Observable<any>];
             return null;
         })
-        .filter(a => a);
+        .filter((a) => a);
 
     const [values, setValues] = React.useState<T>(null);
 
@@ -83,7 +82,7 @@ function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>): T {
     // React.useEffect probably in combination with React.useState to join results of observables (and maybe promises)
     React.useEffect(() => {
         const joinedObs = combineLatest([...observableFields.map(([k, v]) => v)]);
-        joinedObs.subscribe(joinedValues => {
+        joinedObs.subscribe((joinedValues) => {
             const props = joinedValues.reduce((acc, v, i) => {
                 const [key] = observableFields[i];
                 acc[key] = v;
@@ -104,7 +103,7 @@ export function connectAsync<RequiredPropTypes, PropType>(
     // result of propGetter must have same fields as PropType, but fields can be promises or observables
     // no support for Buildable (at least for now) because observables should be enough for the purposes of this library
     propGetter: (props: RequiredPropTypes, ...providers: any) => WithAsyncableParts<PropType>,
-    dependencies: any[],
+    dependencies: any[]
 ): React.FC<RequiredPropTypes> {
     return (props: RequiredPropTypes) => {
         const container = React.useContext(providerContext);
@@ -122,7 +121,6 @@ export function connectAsync<RequiredPropTypes, PropType>(
 
         const builtProps = { ...dynamicProps, ...syncProps } as PropType;
 
-
         return <WrappedComponent {...builtProps} />;
     };
-};
+}

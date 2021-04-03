@@ -7,6 +7,8 @@ import {
     connect,
     buildPropWithSetup,
 } from '@arosaned/inversify-react';
+import wut from '@arosaned/inversify-react/async'
+// import './test';
 
 // #region dependencies
 class TestClass1 {
@@ -94,6 +96,12 @@ const ComponentWithProviders = connect(
     }),
     [TestClass2, TestClass3, TestClass4],
 );
+
+// const ComponentWithProviders2 = 
+
+// todo: run this through ts-node to check if unresolved secondary entrypoints
+//      are a typescript or a webpack issue.
+console.log(wut);
 
 // const element = document.getElementById('test');
 // ReactDOM.render(
