@@ -3,7 +3,7 @@ import * as React from 'react';
 import { interval } from 'rxjs';
 import { take, map, startWith } from 'rxjs/operators';
 import { providerContext, connect, buildPropWithSetup } from '@arosaned/inversify-react';
-import { connectAsync } from '@arosaned/inversify-react/async';
+import { asynchronize } from '@arosaned/inversify-react/async';
 // import './test';
 
 // #region dependencies
@@ -88,8 +88,8 @@ const ComponentWithProviders = connect(
     [TestClass2, TestClass3, TestClass4]
 );
 
-const AsyncComponentWithProviders = connectAsync(
-    TestComponent,
+const AsyncComponentWithProviders = connect(
+    asynchronize(TestComponent),
     (req: Omit<TestComponentProps, 'd'>, dep1: TestClass4) => {
         return {
             ...req,
