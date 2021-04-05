@@ -62,7 +62,7 @@ interface TestComponentProps {
 
 const TestComponent: React.FC<TestComponentProps> = ({ a, b, c, d }) => {
     console.log(d);
-    return <h1>Test: {a + b + c + d}</h1>;
+    return <h1>Test: {a + b + c + (d ?? NaN)}</h1>;
 };
 
 const ComponentWithProviders = connect(

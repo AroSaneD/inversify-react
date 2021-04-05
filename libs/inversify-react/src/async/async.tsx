@@ -37,15 +37,29 @@ import {
  * promises and observables.
  */
 
+export function asynchronizeWithDefaultsProps<TProps>(
+    BaseComponent: React.FC<TProps>
+): React.FC<WithAsyncableParts<TProps>> {
+    return (props: WithAsyncableParts<TProps>) => {
+        const asyncPartOfProps = extractAsynchronousObjects(props);
+        const [resolvedProps, defaults] = convertAsyncPropsToSync(asyncPartOfProps);
+        const convertedProps = resolvedProps ?? defaults;
+
+        // Contains original non-async props, and ex-async props, that now get updated through hooks
+        const builtProps = { ...props, ...convertedProps } as TProps;
+        return <BaseComponent {...builtProps} />;
+    };
+}
+
 export function asynchronize<TProps>(
     BaseComponent: React.FC<TProps>
 ): React.FC<WithAsyncableParts<TProps>> {
     return (props: WithAsyncableParts<TProps>) => {
         const asyncPartOfProps = extractAsynchronousObjects(props);
-        const convertedProps = convertAsyncPropsToSync(asyncPartOfProps);
+        const [convertedProps] = convertAsyncPropsToSync(asyncPartOfProps);
 
         // Contains original non-async props, and ex-async props, that now get updated through hooks
         const builtProps = { ...props, ...convertedProps } as TProps;
-        return <BaseComponent {...builtProps} />;
+        return convertedProps != null ? <BaseComponent {...builtProps} /> : <></>;
     };
 }

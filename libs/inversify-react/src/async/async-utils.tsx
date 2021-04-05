@@ -36,7 +36,7 @@ export function extractAsynchronousObjects<T>(
     return { ...built }; // Returns an object containing only async fields
 }
 
-export function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>): T {
+export function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>): [T, T] {
     // extract promises
     // const promiseFields = Object.keys(asyncableProps)
     //     .map(key => {
@@ -85,5 +85,6 @@ export function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>
         return acc;
     }, {} as T);
 
-    return values || initialValue;
+    // In some use cases we might want the null value for additional handling
+    return [values, initialValue];
 }
