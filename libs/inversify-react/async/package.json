@@ -1,0 +1,5 @@
+{
+    "name": "@arosaned/inversify-react/async",
+    "types": "../dist/async/index.d.ts",
+    "main": "../dist/async/index.js"
+}

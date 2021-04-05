@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { providerContext } from './context';
+import { providerContext } from './common/context';
 
 // todo: key types should match returned object types?
 export function useProviders<T>(providerKeys: any[]): T {

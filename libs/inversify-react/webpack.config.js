@@ -1,7 +1,18 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.ts',
+    // entry: './src/index.ts',
+    entry: {
+        main: {
+            import: './src/index.ts',
+            filename: 'index.js'
+        },
+        async: {
+            import: './src/lib/async/index.ts',
+            filename: 'async/index.js',
+            dependOn: 'main'
+        }
+    },
     module: {
         rules: [
             {
@@ -30,6 +41,11 @@ module.exports = {
             commonjs: 'inversify',
             commonjs2: 'inversify',
             amd: 'inversify'
-        }
+        },
+        rxjs: {
+            commonjs: 'rxjs',
+            commonjs2: 'rxjs',
+            amd: 'rxjs',
+        },
     }
 };

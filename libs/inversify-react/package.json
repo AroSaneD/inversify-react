@@ -1,26 +1,35 @@
 {
-  "name": "@arosaned/inversify-react",
-  "version": "0.0.1",
-  "main": "dist/index",
-  "typings": "dist/src/lib/index",
-  "module": "src/index.ts",
-  "scripts": {
-    "test": "jest",
-    "build": "webpack"
-  },
-  "dependencies": {
-    "react": "^17.0.1",
-    "inversify": "^5.0.1"
-  },
-  "devDependencies": {
-    "typescript": "^4.2.3",
-    "@types/react": "^17.0.3",
-    "@testing-library/react": "^11.2.5",
-    "@types/jest": "^26.0.21",
-    "tslib": "~2.1.0",
-    "jest": "~26.6.3",
-    "webpack": "~5.27.1",
-    "ts-loader": "~8.0.18",
-    "webpack-cli": "~4.5.0"
-  }
+    "name": "@arosaned/inversify-react",
+    "version": "0.0.1",
+    "main": "./dist/index.js",
+    "typings": "./dist/index.d.ts",
+    "types": "./dist/index.d.ts",
+    "module": "./dist/index.js",
+    "exports": {
+        ".": "./dist/index.js",
+        "./async": "./dist/async/index.js"
+    },
+    "files": [
+        "./dist/*"
+    ],
+    "scripts": {
+        "test": "jest",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "react": "^17.0.1",
+        "inversify": "^5.0.1",
+        "rxjs": "~7.0.0-beta.15"
+    },
+    "devDependencies": {
+        "typescript": "^4.2.3",
+        "@types/react": "^17.0.3",
+        "@testing-library/react": "^11.2.5",
+        "@types/jest": "^26.0.21",
+        "tslib": "~2.1.0",
+        "jest": "~26.6.3",
+        "webpack": "~5.27.1",
+        "ts-loader": "~8.0.18",
+        "webpack-cli": "~4.5.0"
+    }
 }

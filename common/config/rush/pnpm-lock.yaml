@@ -12,7 +12,6 @@ dependencies:
   jest: 26.6.3
   react: 17.0.1
   react-dom: 17.0.1_react@17.0.1
-  rxjs: 6.6.6
   style-loader: 2.0.0_webpack@5.27.1
   ts-loader: 8.0.18_typescript@4.2.3+webpack@5.27.1
   tslib: 2.1.0
@@ -5378,14 +5377,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==
-  /rxjs/6.6.6:
+  /rxjs/7.0.0-beta.15:
     dependencies:
-      tslib: 1.14.1
+      tslib: 2.1.0
     dev: false
-    engines:
-      npm: '>=2.0.0'
     resolution:
-      integrity: sha512-/oTwee4N4iWzAMAL9xdGKjkEHmIwupR3oXbQjCKywF1BeFohswF3vZdogbmEF6pZkOsXTzWkrZszrWpQTByYVg==
+      integrity: sha512-OchIxDPPHiSF7V93HaAym7ZXw5ZLQlHrkrlisQrPDkeKmkMNmQS0T8U6Zdf25RfDSVZejN25JHF5S3GmX4XNeQ==
   /safe-buffer/5.1.2:
     dev: false
     resolution:
@@ -6733,6 +6730,7 @@ packages:
       inversify: 5.0.5
       jest: 26.6.3
       react: 17.0.1
+      rxjs: 7.0.0-beta.15
       ts-loader: 8.0.18_typescript@4.2.3+webpack@5.27.1
       tslib: 2.1.0
       typescript: 4.2.3
@@ -6746,7 +6744,7 @@ packages:
       webpack-bundle-analyzer: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-m/5tNHdo7YZwaqBcO2Yiy5+f8p0Dc3+4VFhiz/kEvWE4akhuF1JFdqddwjYXJ1ym6+BhKupaG/syxd91xFBDTA==
+      integrity: sha512-FbLRiA7sOkTz0u8Y1H7+JBVRlmqmTiXsmsEUingRSiuk7MxyTlIghRNLeStI2/n4amFB6NFmxZsEQpamuObIdw==
       tarball: file:projects/inversify-react.tgz
     version: 0.0.0
   file:projects/ir-playground.tgz:
@@ -6763,7 +6761,7 @@ packages:
       jest: 26.6.3
       react: 17.0.1
       react-dom: 17.0.1_react@17.0.1
-      rxjs: 6.6.6
+      rxjs: 7.0.0-beta.15
       style-loader: 2.0.0_webpack@5.27.1
       ts-loader: 8.0.18_typescript@4.2.3+webpack@5.27.1
       tslib: 2.1.0
@@ -6775,7 +6773,7 @@ packages:
     dev: false
     name: '@rush-temp/ir-playground'
     resolution:
-      integrity: sha512-JF9MIT1JCgP5nDnFNkK4d0AVw+BPyCl5ZEZxObzYk8FLx4IjotYW9ntybvsh2YYC5vskZdz0SXFp+nMqjKkuFg==
+      integrity: sha512-HxY/r2G0TBjmXntCpb7lGuKqCYhjzimcmpCVWiTW4v0rBsmi1ABSOU7JopkQHOu9Vc/Lz6Kcy2LqjMUWjgH9eQ==
       tarball: file:projects/ir-playground.tgz
     version: 0.0.0
 registry: ''
@@ -6793,7 +6791,6 @@ specifiers:
   jest: ~26.6.3
   react: ^17.0.1
   react-dom: ~17.0.1
-  rxjs: ~6.6.6
   style-loader: ~2.0.0
   ts-loader: ~8.0.18
   tslib: ~2.1.0

@@ -1,12 +1,9 @@
 import { Container } from 'inversify';
 import * as React from 'react';
 import { interval } from 'rxjs';
-import { take, map } from 'rxjs/operators';
-import {
-    providerContext,
-    connect,
-    buildPropWithSetup,
-} from '@arosaned/inversify-react';
+import { take, map, startWith } from 'rxjs/operators';
+import { providerContext, connect, buildPropWithSetup } from '@arosaned/inversify-react';
+import { asynchronize } from '@arosaned/inversify-react/async';
 
 // #region dependencies
 class TestClass1 {
@@ -38,8 +35,9 @@ class TestClass4 {
 
     getMutatableD() {
         return interval(200).pipe(
-            map((i) => i * 2),
-            take(5),
+            startWith(0),
+            map(i => i * 2),
+            take(6)
         );
     }
 }
@@ -49,12 +47,10 @@ class TestClass4 {
 
 const container = new Container();
 
-container.bind(TestClass1).toDynamicValue((_) => new TestClass1());
-container
-    .bind(TestClass2)
-    .toDynamicValue((ctx) => new TestClass2(ctx.container.get(TestClass1)));
-container.bind(TestClass3).toDynamicValue((_) => new TestClass3());
-container.bind(TestClass4).toDynamicValue((_) => new TestClass4());
+container.bind(TestClass1).toDynamicValue(_ => new TestClass1());
+container.bind(TestClass2).toDynamicValue(ctx => new TestClass2(ctx.container.get(TestClass1)));
+container.bind(TestClass3).toDynamicValue(_ => new TestClass3());
+container.bind(TestClass4).toDynamicValue(_ => new TestClass4());
 
 // #endregion
 interface TestComponentProps {
@@ -65,23 +61,16 @@ interface TestComponentProps {
 }
 
 const TestComponent: React.FC<TestComponentProps> = ({ a, b, c, d }) => {
+    console.log(d);
     return <h1>Test: {a + b + c + d}</h1>;
 };
 
-const ComponentWithProviders = connect<
-    Omit<TestComponentProps, 'c'>,
-    { c: number }
->(
+const ComponentWithProviders = connect(
     TestComponent,
-    (
-        addedProps: { c: number },
-        dep1: TestClass2,
-        dep2: TestClass3,
-        dep3: TestClass4,
-    ) => ({
+    (requiredParams: { c: number }, dep1: TestClass2, dep2: TestClass3, dep3: TestClass4) => ({
         a: dep1.getA(),
         b: dep2.getB(),
-        c: addedProps.c,
+        c: requiredParams.c,
         d: buildPropWithSetup(() => {
             const [v, setV] = React.useState<number>(0);
             React.useEffect(() => {
@@ -95,16 +84,27 @@ const ComponentWithProviders = connect<
             return v;
         }),
     }),
-    [TestClass2, TestClass3, TestClass4],
+    [TestClass2, TestClass3, TestClass4]
 );
 
-// const element = document.getElementById('test');
-// ReactDOM.render(
+const AsyncComponentWithProviders = connect(
+    asynchronize(TestComponent),
+    (req: Omit<TestComponentProps, 'd'>, dep1: TestClass4) => {
+        return {
+            ...req,
+            d: dep1.getMutatableD(),
+        };
+    },
+    [TestClass4]
+);
 
-// );
 const testApp = () => (
     <providerContext.Provider value={container}>
-        <ComponentWithProviders c={10} />
+        <div>
+            {/* <ComponentWithProviders c={5} />
+            <hr /> */}
+            <AsyncComponentWithProviders a={2} b={3} c={5} />
+        </div>
     </providerContext.Provider>
 );
 
