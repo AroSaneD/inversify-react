@@ -4,7 +4,6 @@ import { interval } from 'rxjs';
 import { take, map, startWith } from 'rxjs/operators';
 import { providerContext, connect, buildPropWithSetup } from '@arosaned/inversify-react';
 import { asynchronize } from '@arosaned/inversify-react/async';
-// import './test';
 
 // #region dependencies
 class TestClass1 {
@@ -37,7 +36,7 @@ class TestClass4 {
     getMutatableD() {
         return interval(200).pipe(
             startWith(0),
-            map((i) => i * 2),
+            map(i => i * 2),
             take(6)
         );
     }
@@ -48,10 +47,10 @@ class TestClass4 {
 
 const container = new Container();
 
-container.bind(TestClass1).toDynamicValue((_) => new TestClass1());
-container.bind(TestClass2).toDynamicValue((ctx) => new TestClass2(ctx.container.get(TestClass1)));
-container.bind(TestClass3).toDynamicValue((_) => new TestClass3());
-container.bind(TestClass4).toDynamicValue((_) => new TestClass4());
+container.bind(TestClass1).toDynamicValue(_ => new TestClass1());
+container.bind(TestClass2).toDynamicValue(ctx => new TestClass2(ctx.container.get(TestClass1)));
+container.bind(TestClass3).toDynamicValue(_ => new TestClass3());
+container.bind(TestClass4).toDynamicValue(_ => new TestClass4());
 
 // #endregion
 interface TestComponentProps {
@@ -93,16 +92,12 @@ const AsyncComponentWithProviders = connect(
     (req: Omit<TestComponentProps, 'd'>, dep1: TestClass4) => {
         return {
             ...req,
-            d: dep1.getMutatableD() as any,
+            d: dep1.getMutatableD(),
         };
     },
     [TestClass4]
 );
 
-// const element = document.getElementById('test');
-// ReactDOM.render(
-
-// );
 const testApp = () => (
     <providerContext.Provider value={container}>
         <div>

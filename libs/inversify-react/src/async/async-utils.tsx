@@ -1,11 +1,10 @@
 import React from 'react';
 import { Observable, combineLatest } from 'rxjs'; // remove when observables become native
-import { providerContext } from '../common/context';
 
 type Asynchronous<T> = /*Promise<T> |*/ Observable<T>;
 
 export type WithAsyncableParts<T> = {
-    [P in keyof T]: T[P] | Asynchronous<T>;
+    [P in keyof T]: T[P] | Asynchronous<T[P]>;
 };
 
 // function isPromise(maybePromise: any) {
@@ -26,17 +25,11 @@ export function extractAsynchronousObjects<T>(
 ): WithAsyncableParts<Partial<T>> {
     // If any fields in the prop container are setup functions,
     const built = Object.keys(buildableProps)
-        .map((key) => {
-            const maybeAsynchronous = buildableProps[key as keyof T];
-            if (isAsynchronousObject(maybeAsynchronous)) {
-                return [key, maybeAsynchronous] as [keyof T, T[keyof T]];
-            }
-
-            return null;
-        })
-        .filter((pair) => pair != null)
-        .reduce((acc: Partial<WithAsyncableParts<T>>, [k, b]) => {
-            acc[k] = b;
+        .map(key => key as keyof T) // So `key` would be interpreted as type `keyof T`
+        .filter(key => isAsynchronousObject(buildableProps[key]))
+        .map(key => [key, buildableProps[key]] as [keyof T, T[keyof T]])
+        .reduce((acc: Partial<WithAsyncableParts<T>>, [k, v]) => {
+            acc[k] = v;
             return acc;
         }, {});
 
@@ -56,12 +49,12 @@ export function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>
 
     // extract observables
     const observableFields = Object.keys(asyncableProps)
-        .map((key) => {
+        .map(key => {
             const eInQ = asyncableProps[key as keyof T];
             if (isObservable(eInQ)) return [key, eInQ] as [string, Observable<any>];
             return null;
         })
-        .filter((a) => a);
+        .filter(a => a);
 
     const [values, setValues] = React.useState<T>(null);
 
@@ -69,7 +62,7 @@ export function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>
     // React.useEffect probably in combination with React.useState to join results of observables (and maybe promises)
     React.useEffect(() => {
         const joinedObs = combineLatest([...observableFields.map(([k, v]) => v)]);
-        joinedObs.subscribe((joinedValues) => {
+        joinedObs.subscribe(joinedValues => {
             const props = joinedValues.reduce((acc, v, i) => {
                 const [key] = observableFields[i];
                 acc[key] = v;
@@ -78,6 +71,8 @@ export function convertAsyncPropsToSync<T>(asyncableProps: WithAsyncableParts<T>
 
             setValues(props);
         });
+
+        // todo: error handling?
     }, []);
 
     // If receives null/empty object, initial props won't be overwritten

@@ -6,12 +6,12 @@ import { providerContext } from './common/context';
 export function connect<RequiredPropTypes, PropType>(
     WrappedComponent: React.FC<PropType>,
     propGetter: (props: RequiredPropTypes, ...providers: any) => Buildable<PropType>,
-    dependencies: any[],
+    dependencies: any[]
 ): React.FC<RequiredPropTypes> {
     return (props: RequiredPropTypes) => {
         const container = React.useContext(providerContext);
         const dynamicProps = React.useMemo(() => {
-            const providers = dependencies.map((d) => container.get(d));
+            const providers = dependencies.map(d => container.get(d));
             const result = propGetter(props, ...providers);
 
             return result;
@@ -22,4 +22,4 @@ export function connect<RequiredPropTypes, PropType>(
 
         return <WrappedComponent {...builtProps} />;
     };
-};
+}
