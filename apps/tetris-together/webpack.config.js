@@ -17,7 +17,7 @@ const ReactRefreshTypeScript = require('react-refresh-typescript');
 
 // https://docs.github.com/en/packages
 
-const isDevelopment = true; // process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 module.exports = {
     entry: './src/main.tsx',
@@ -59,7 +59,6 @@ module.exports = {
         new ForkTsCheckerWebpackPlugin({
             async: true,
         }),
-        isDevelopment && new webpack.HotModuleReplacementPlugin(),
         isDevelopment && new ReactRefreshWebpackPlugin(),
     ].filter(Boolean),
     resolve: {
