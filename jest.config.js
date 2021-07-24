@@ -1,3 +1,9 @@
+module.exports = {
+    preset: "ts-jest",
+    testEnvironment: "jsdom",
+    testRunner: "jasmine2",
+};
+
 // module.exports = {
 //   displayName: 'inversify-react',
 //   preset: '../../jest.preset.js',
